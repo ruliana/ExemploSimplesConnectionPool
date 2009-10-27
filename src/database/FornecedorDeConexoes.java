@@ -1,5 +1,8 @@
 package database;
 
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -28,11 +31,14 @@ public class FornecedorDeConexoes {
 
     public Connection obterConexao() {
         iniciarDriverDeConexaoSeNecessario();
+        long start = currentTimeMillis();
         try {
             // String de conexão, usuário, senha
             return DriverManager.getConnection("jdbc:h2:localhost/~/test", "sa", "");
         } catch (SQLException e) {
             throw new RuntimeException("Não foi possível conectar ao banco de dados", e);
+        } finally {
+            System.out.println(format("tempo: %dms", currentTimeMillis() - start));
         }
     }
 }
