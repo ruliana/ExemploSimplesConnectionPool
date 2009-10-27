@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+  <Resource name="jdbc/pool_de_conexoes"
+            auth="Container"
+            type="javax.sql.DataSource"
+            username="sa"
+            password=""
+            driverClassName="org.h2.Driver"
+            url="jdbc:h2:tcp://localhost/~/test" />
+</Context>

@@ -1,9 +1,16 @@
 package database;
 
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 public class FornecedorDeConexoes {
 
@@ -28,11 +35,19 @@ public class FornecedorDeConexoes {
 
     public Connection obterConexao() {
         iniciarDriverDeConexaoSeNecessario();
+        long start = currentTimeMillis();
         try {
-            // String de conexão, usuário, senha
-            return DriverManager.getConnection("jdbc:h2:localhost/~/test", "sa", "");
+            Context contextoInicial = new InitialContext();
+            Context ambiente = (Context) contextoInicial.lookup("java:comp/env");
+            DataSource ds = (DataSource) ambiente.lookup("jdbc/pool_de_conexoes");
+            return ds.getConnection();
+            
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
         } catch (SQLException e) {
-            throw new RuntimeException("Não foi possível conectar ao banco de dados", e);
+            throw new RuntimeException(e);
+        } finally {
+            System.out.println(format("tempo: %dms", currentTimeMillis() - start));
         }
     }
 }
